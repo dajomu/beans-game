@@ -9,30 +9,22 @@ export default class Demo extends Phaser.Scene
 
     preload ()
     {
-        this.load.image('logo', 'assets/phaser3-logo.png');
-        this.load.image('libs', 'assets/libs.png');
-        this.load.glsl('bundle', 'assets/plasma-bundle.glsl.js');
-        this.load.glsl('stars', 'assets/starfields.glsl.js');
+        this.load.image('ball', 'assets/sprites/pangball.png');
     }
 
     create ()
     {
-        this.add.shader('RGB Shift Field', 0, 0, 800, 600).setOrigin(0);
+        this.matter.world.setBounds(0, 0, 800, 600, 32, true, true, false, true);
 
-        this.add.shader('Plasma', 0, 412, 800, 172).setOrigin(0);
+        //  Add in a stack of balls
 
-        this.add.image(400, 300, 'libs');
-
-        const logo = this.add.image(400, 70, 'logo');
-
-        this.tweens.add({
-            targets: logo,
-            y: 350,
-            duration: 1500,
-            ease: 'Sine.inOut',
-            yoyo: true,
-            repeat: -1
-        })
+        for (var i = 0; i < 64; i++)
+        {
+            var ball = this.matter.add.image(Phaser.Math.Between(100, 700), Phaser.Math.Between(-600, 0), 'ball');
+            ball.setCircle(15);
+            ball.setFriction(0.005);
+            ball.setBounce(1);
+        }
     }
 }
 
@@ -41,7 +33,14 @@ const config = {
     backgroundColor: '#125555',
     width: 800,
     height: 600,
-    scene: Demo
+    scene: Demo,
+    physics: {
+        default: 'matter',
+        matter: {
+            enableSleeping: true
+            
+        }
+    },
 };
 
 const game = new Phaser.Game(config);
